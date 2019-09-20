@@ -8,5 +8,7 @@ After meals are entered, you can use meal helper to generate a random or custom 
 After generation, Meal Helper adds your meals to the calendar of your choice and the combines the listed
 ingredients from each meal-plan meal into a shopping list.
 
+Additionally, Meal Helper allows you to export and import meals, allowing you to share meals with included ingredients and instructions.
+
 Note: -This is a proof of concept and not intended as a release version.
       -This version currently only supports macOS
