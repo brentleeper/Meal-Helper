@@ -1,5 +1,5 @@
 # Meal-Helper
-I made meal helper after being annoyed at having to manually look-up recipes and make shopping lists. 
+I made meal helper after being annoyed at having to manually look-up recipes and ingredients and make shopping lists. 
 
 Meal Helper allows you to create and store as many meals as you'd like and for each meal, add ingredients of 
 various types and quantites and add a list of ordered instructions.
