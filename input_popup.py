@@ -103,12 +103,12 @@ class Input_Popup:
 
             for i in range(total_days):
                 cur_date = start_date + timedelta(days=i)
-                cur_date_str = cur_date.strftime('%m/%d/%y')
+                cur_date_str = f"{cur_date.strftime('%m/%d/%y')} -  {cur_date.strftime('%A')}"
                 cur_label = Label(top, text=cur_date_str)
                 cur_label.pack()
                 cur_label_pack = (cur_date_str, cur_label)
                 self.label_packs.append(cur_label_pack)
-                cur_combo = ttk.Combobox(top, state="readonly", values=meal_names)
+                cur_combo = ttk.Combobox(top, state="readonly", values=[""]+meal_names)
                 cur_combo.pack()
                 self.combos.append(cur_combo)
 
@@ -147,7 +147,7 @@ class Input_Popup:
             meal_dates = []
 
             for i, label_pack in enumerate(self.label_packs):
-                cur_date_str = label_pack[0]
+                cur_date_str = label_pack[0].split("-")[0].strip()
                 cur_meal = self.combos[i].get()
                 if not cur_meal:
                     continue
