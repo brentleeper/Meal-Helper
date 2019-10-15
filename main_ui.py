@@ -5,11 +5,13 @@
 # User additions will be lost if they are placed in code-generated areas.
 
 # tk_happy generated code. DO NOT EDIT THE FOLLOWING. section "imports"
+import sys
 import os
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter import filedialog
+import tkinter.font as tkfont
 import pickle
 from meal import Meal
 from input_popup import Input_Popup
@@ -71,7 +73,7 @@ class Main_UI:
 
         for i in range(7):
             date = self.today + timedelta(days=i)
-            self.date_strings.append(date.strftime('%m/%d/%y'))
+            self.date_strings.append(f"{date.strftime('%m/%d/%y')} -  {date.strftime('%A')}")
 
         self.Start_Date_Combo = ttk.Combobox(self.master, state="readonly", values=self.date_strings)
         self.Start_Date_Combo.current(0)
@@ -144,9 +146,7 @@ class Main_UI:
         self.Listbox_1.bind("<<ListboxSelect>>", self.Listbox_1_Click)
         self.Listbox_1.bind("<Double-1>", self.Listbox_1_Double_Click)
 
-
-
-        lbframe = Frame( self.master )
+        lbframe = Frame(self.master)
         self.Listbox_2_frame = lbframe
         scrollbar = Scrollbar(lbframe, orient=VERTICAL)
         self.Listbox_2 = Listbox(lbframe, width="15", selectmode="extended", yscrollcommand=scrollbar.set)
@@ -158,7 +158,6 @@ class Main_UI:
         self.Listbox_2.bind("<ButtonRelease-1>", self.Listbox_2_Click)
         self.Listbox_2.bind("<<ListboxSelect>>", self.Listbox_2_Click)
         self.Listbox_2.bind("<Double-1>", self.Listbox_2_Double_Click)
-
 
         lbframe = Frame( self.master )
         self.Listbox_3_frame = lbframe
@@ -195,7 +194,6 @@ class Main_UI:
         if not self.initComplete:
             self.master.bind("<Configure>", self.Master_Configure)
             self.initComplete = 1
-
 
     def Master_Configure(self, event):
         pass
@@ -481,7 +479,7 @@ class Main_UI:
 
         days_needed_mod = ""
 
-        if not self.custom_chk_value.get():
+        if not custom:
             plural_mod = ""
 
             if days_needed > 1:
@@ -494,6 +492,8 @@ class Main_UI:
 
         if not confirm_generate:
             return
+
+        start_date = start_date.split("-")[0].strip()
 
         print(f"Generating meal plan for {weeks} weeks")
 
@@ -519,8 +519,6 @@ class Main_UI:
         self.export_calendar()
 
         self.generate_shopping_list(export_meals)
-
-
 
     # tk_happy generated code. DO NOT EDIT THE FOLLOWING. section "compID=8"
     def Remove_Ingredient_Button_Click(self, event): #click method for component ID=8
@@ -878,7 +876,7 @@ class Main_UI:
         desc = ""
 
         for instruction in meal.instructions:
-            desc += instruction + "\n"
+            desc += "• " + instruction + "\n"
 
         event.description = desc
 
