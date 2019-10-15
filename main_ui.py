@@ -19,6 +19,8 @@ from ics import Calendar, Event
 import random
 from datetime import datetime, timedelta
 import time
+from concurrent.futures import ThreadPoolExecutor
+import threading
 
 # >>>>>>insert any user code below this comment for section "imports"
 # Place any user import statements here
@@ -36,6 +38,8 @@ class Main_UI:
 
         self.calendar = Calendar()
 
+        self.run = True
+
         # bind master to <Configure> in order to handle any resizing, etc.
         # postpone self.master.bind("<Configure>", self.Master_Configure)
         self.master.bind('<Enter>', self.bindConfigure)
@@ -44,11 +48,15 @@ class Main_UI:
             result = messagebox.askquestion("Exit", "Are You Sure You Want To Exit?", icon='warning',
                                             parent=self.master)
             if result == 'yes':
-                #to-do, store data for next run
+                self.run = False
                 self.store_data()
                 for child_element in self.master.winfo_children():
                     child_element.destroy()
                 exit()
+
+        self.background_checkpointer_executor = ThreadPoolExecutor(max_workers=1)
+        self.checkpoint_timer_duration = 60 #seconds
+        self.background_checkpointer_executor.submit(self.background_checkpointer)
 
         self.master.protocol('WM_DELETE_WINDOW', exitClick)
 
@@ -825,7 +833,23 @@ class Main_UI:
 
         return new_meal_idx
 
+    def background_checkpointer(self):
+        last_save = int(time.time())
+        while self.run:
+            curTime = int(time.time())
+            curDuration = curTime - last_save
+
+            if curDuration >= self.checkpoint_timer_duration:
+                print("Checkpointer: Triggering -> store_data")
+                self.store_data()
+                last_save = int(time.time())
+            else:
+                print("Checkpointer: Waiting for timer duration to elapse, sleeping..")
+                time.sleep(3)
+        print("Checkpointer: Releasing")
+
     def store_data(self):
+        print("Meal Helper: Starting Data Store Process")
         with open("meal_helper.dat", "wb") as dat_file:
             data = {
                 "meals": self.meals,
@@ -835,6 +859,7 @@ class Main_UI:
             }
 
             pickle.dump(data, dat_file)
+        print("Meal Helper: Data Store Process Successful")
 
     def load_data(self):
         try:
